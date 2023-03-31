@@ -22,7 +22,7 @@ admin.initializeApp({
 
 interface VideoRequestBody {
   blob: string;
-  id: string;
+  name: string;
 }
 
 interface VideoParams {
@@ -57,7 +57,7 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       if (!snapshot.exists) {
         return res.code(404).send({ error: "Video not found" });
       }
-      const { blob, name } = snapshot.data();
+      const { blob, _name } = snapshot.data();
       const videoBlob = Buffer.from(blob, "base64");
 
       res.headers({
