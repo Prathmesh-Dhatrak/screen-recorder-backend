@@ -1,9 +1,10 @@
 import { FastifyPluginAsync } from "fastify";
 const admin = require("firebase-admin");
 
-
 admin.initializeApp({
-  credential: admin.credential.cert("../../iv-screen-recorder-server-firebase-adminsdk-cf5m9-d583d0272e.json"),
+  credential: admin.credential.cert(
+    "../../iv-screen-recorder-server-firebase-adminsdk-cf5m9-d583d0272e.json"
+  ),
 });
 
 interface VideoRequestBody {
@@ -56,6 +57,10 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       console.error(error);
       res.code(500).send({ error: "Internal server error" });
     }
+  });
+
+  fastify.get("/videos", async function (request, reply) {
+    return { video: true };
   });
 };
 
