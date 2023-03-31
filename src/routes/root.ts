@@ -48,17 +48,18 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.get<{ Params: VideoParams }>("/videos/:id", async (req, res) => {
     try {
-      const { name } = req.params;
+      const { id } = req.params;
       const snapshot = await admin
         .firestore()
         .collection("videos")
-        .doc(name)
+        .doc(id)
         .get();
       if (!snapshot.exists) {
         return res.code(404).send({ error: "Video not found" });
       }
       const { blob, _name } = snapshot.data();
       const videoBlob = Buffer.from(blob, "base64");
+      console.log(_name);
 
       res.headers({
         "Content-Type": "video/mp4",
