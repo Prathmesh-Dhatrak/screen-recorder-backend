@@ -34,6 +34,9 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   });
   fastify.post<{ Body: VideoRequestBody }>("/videos", async (req, res) => {
     try {
+      res.headers({
+        "Access-Control-Allow-Origin": "*", // add this line to allow any origin
+      });
       const { blob, name } = req.body;
       const { id } = await admin
         .firestore()
