@@ -22,7 +22,7 @@ admin.initializeApp({
 
 interface VideoRequestBody {
   blob: string;
-  data: string;
+  id: string;
 }
 
 interface VideoParams {
@@ -34,11 +34,11 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   });
   fastify.post<{ Body: VideoRequestBody }>("/videos", async (req, res) => {
     try {
-      const { blob, data } = req.body;
+      const { blob, name } = req.body;
       const { id } = await admin
         .firestore()
         .collection("videos")
-        .add({ blob, data });
+        .add({ blob, name });
       res.send({ id });
     } catch (error) {
       console.error(error);
@@ -48,17 +48,17 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.get<{ Params: VideoParams }>("/videos/:id", async (req, res) => {
     try {
-      const { id } = req.params;
+      const { name } = req.params;
       const snapshot = await admin
         .firestore()
         .collection("videos")
-        .doc(id)
+        .doc(name)
         .get();
       if (!snapshot.exists) {
         return res.code(404).send({ error: "Video not found" });
       }
-      const { data } = snapshot.data();
-      const videoBlob = Buffer.from(data, "base64");
+      const { blob, name } = snapshot.data();
+      const videoBlob = Buffer.from(blob, "base64");
 
       res.headers({
         "Content-Type": "video/mp4",
